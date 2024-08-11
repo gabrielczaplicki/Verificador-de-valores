@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Venda</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        input {
+            width: calc(100% - 22px);
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        button#gerarTexto {
+            border: 1px solid #4CAF50;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button#gerarTexto:hover {
+            background-color: #45a049;
+        }
+
+        button#copiarTexto {
+            border: 1px solid #007BFF;
+            background-color: #007BFF;
+            color: white;
+        }
+
+        button#copiarTexto:hover {
+            background-color: #0056b3;
+        }
+
+        .output {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 20px;
+            text-align: left;
+            position: relative;
+            white-space: pre-line; /* Preserve line breaks */
+        }
+
+        #copiarMensagem {
+            display: none;
+            color: white;
+            background-color: #007BFF;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="../PaginaPrincipal.html" class="back-button">Voltar</a>
+
+    <div class="container">
+        <h2>Confirmação de Venda</h2>
+        
+        <div class="input-group">
+            <label for="linkPagamento">Link de Pagamento:</label>
+            <input type="text" id="linkPagamento" placeholder="Digite o link de pagamento">
+        </div>
+
+        <button id="gerarTexto" onclick="gerarTexto()">Gerar Nota</button>
+        <button id="copiarTexto" onclick="copiarTexto()">Copiar Texto</button>
+        
+        <div class="output" id="output"></div>
+        <div id="copiarMensagem">Texto copiado com sucesso!</div>
+
+        <script>
+            function calcularDataVencimento() {
+                const hoje = new Date();
+                const tresDiasDepois = new Date(hoje);
+                tresDiasDepois.setDate(hoje.getDate() + 3);
+
+                // Ajusta para pular domingos
+                if (tresDiasDepois.getDay() === 0) {
+                    tresDiasDepois.setDate(tresDiasDepois.getDate() + 1);
+                }
+
+                const dia = String(tresDiasDepois.getDate()).padStart(2, '0');
+                const mes = String(tresDiasDepois.getMonth() + 1).padStart(2, '0');
+                const ano = tresDiasDepois.getFullYear();
+
+                return `${dia}/${mes}`;
+            }
+
+            function gerarTexto() {
+                const linkPagamento = document.getElementById('linkPagamento').value;
+                const dataVencimento = calcularDataVencimento();
+
+                let textoGerado = `
+Prontinho, agora para finalizar alguns lembretes:
+
+Sua inscrição foi gerada com sucesso ✅ acesse o portal <a href="http://candidatos.portal.estacio.br" target="_blank">candidatos.portal.estacio.br</a> com CPF pague seu boleto até a data ${dataVencimento} via PIX ou boleto que já enviei no seu e-mail.
+
+Parabéns pela escolha, desejamos sucesso nessa nova etapa. 😉
+
+As ofertas podem sofrer reajustes anuais. Dúvidas, consulte regulamento: <a href="http://estacio.br/regulamentos" target="_blank">estacio.br/regulamentos</a>.
+
+Aqui está seu link de pagamento: <a href="${linkPagamento}" target="_blank">${linkPagamento}</a>
+                `;
+
+                document.getElementById('output').innerHTML = textoGerado;
+            }
+
+            function copiarTexto() {
+                const output = document.getElementById('output');
+                const range = document.createRange();
+                range.selectNode(output);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand('copy');
+                document.getElementById('copiarMensagem').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('copiarMensagem').style.display = 'none';
+                }, 2000);
+            }
+        </script>
+    </div>
+
+</body>
+</html>
